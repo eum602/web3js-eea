@@ -10,7 +10,7 @@ const bytecode = fs.readFileSync(
 );
 
 const provider = new Web3.providers.HttpProvider(besu.node1.url);
-const node = new EEAClient(new Web3(provider), 2018);
+const node = new EEAClient(new Web3(provider), 648529);
 
 async function run() {
   const enclaveKey = orion.node1.publicKey;

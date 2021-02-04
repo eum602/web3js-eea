@@ -1,0 +1,40 @@
+const fs = require("fs");
+const path = require("path");
+const Web3 = require("web3");
+const EEAClient = require("../../src");
+
+const { besu } = require("../keys");
+
+const node = new EEAClient(new Web3(besu.node1.url), 648529);
+const params = JSON.parse(fs.readFileSync(path.join(__dirname, "params.json")));
+
+function run() {
+  const { privacyGroupId, contractAddress: address } = params;
+
+  const tPrevious = Date.now();
+  let tFinal;
+  const fromBlock = "{{fromBlock}}";
+  const toBlock = "{{toBlock}}";
+
+  // console.log("FromBlock: " + fromBlock)
+  // console.log("ToBlock: " + toBlock)
+
+  const filter = {
+    address,
+    fromBlock,
+    toBlock
+  };
+
+  return node.priv.getPastLogs(privacyGroupId, filter).then(logs => {
+    // console.log("Received logs\n", logs);
+    tFinal = Date.now();
+    // console.log("response time",(tFinal-tPrevious)/1000, "seconds")
+    const response_time = (tFinal - tPrevious) / 1000;
+    console.log(
+      `${fromBlock},${toBlock},${tPrevious},${tFinal},${response_time}`
+    );
+    return logs;
+  });
+}
+
+run();
